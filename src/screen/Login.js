@@ -8,7 +8,7 @@ const Container = styled.div`
 `
 
 const Title = styled.h1`
-    background-color: ${(props) => props.theme.bgColor};
+   
 `
 
 
