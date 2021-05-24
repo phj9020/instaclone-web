@@ -1,5 +1,5 @@
-import React from 'react'
-import { isLoggedInVar } from '../apollo'
+import React from 'react';
+import { isLoggedInVar } from '../apollo';
 
 function Home() {
     return (
