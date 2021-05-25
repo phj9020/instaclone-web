@@ -3,5 +3,5 @@
 - [X] Router 
 - [X] Authentication 
 - [X] Architecture 
-- [ ] Style 
-- [ ] Log in
+- [X] Style 
+- [ ] Log in / Sign up 
