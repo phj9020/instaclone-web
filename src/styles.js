@@ -3,8 +3,8 @@ import reset from 'styled-reset';
 
 // Define Theme 
 export const lightTheme = {
-    fontColor: "#2c2c2c",
-    bgColor: "white"
+    accent: "#0095f6",
+    borderColor: "rgb(219, 219, 219)",
 };
 
 export const darkTheme = {
@@ -22,11 +22,14 @@ export const GlobalStyle = createGlobalStyle`
         all: unset;
     }
     body {
-        background-color: #FAFAFA;
+        background-color: #fafafa;
         font-size: 14px;
         font-family: 'Open Sans', sans-serif;
+        color: rgb(38,38,38);
     }
     a {
         text-decoration: none;
+        margin-left: 5px;
+        font-weight: 600;
     }
 `
