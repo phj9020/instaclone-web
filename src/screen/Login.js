@@ -32,7 +32,7 @@ function Login() {
     const {register, handleSubmit, formState :{errors, isValid}} = useForm({mode: "onChange"});
     const onSubmitValid = data => {
 
-        // console.log("valid", data);
+        console.log("valid", data);
     }
 
     
@@ -40,7 +40,7 @@ function Login() {
     console.log("isValid", isValid)
     return (
         <AuthLayout>
-            <PageTitle title="Log in | Instaclone" />
+            <PageTitle title="Log in" />
             <FormBox>
                 <img src="/img/Instagram_logo.svg" alt="instagram-logo"/>
                 <form onSubmit={handleSubmit(onSubmitValid)}>
@@ -56,7 +56,7 @@ function Login() {
                     <FormError message={errors?.password?.message} />
                     <Input {...register("password", 
                     { required: "password is required", 
-                    minLength: {value: 6, message:"Password should be longer than 6 characters"} 
+                    minLength: {value: 3, message:"Password should be longer than 3 characters"} 
                     })} 
                         type="password" 
                         autoComplete="off" 

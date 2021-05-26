@@ -50,7 +50,7 @@ const Terms = styled.p`
 function Signup() {
     return (
         <AuthLayout>
-            <PageTitle title="Sign up | Instaclone" />
+            <PageTitle title="Sign up" />
             <FormBox>
                 <HeaderContainer>
                     <img src="/img/Instagram_logo.svg" alt="instagram-logo"/>

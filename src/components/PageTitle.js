@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 function PageTitle ({title}) {
     return (
         <Helmet>
-            <title>{title}</title>
+            <title>{title} | Instaclone</title>
         </Helmet>
     )
 };
