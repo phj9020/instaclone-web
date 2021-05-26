@@ -10,6 +10,7 @@ import Seperator from "../components/auth/Seperator";
 import Input from "../components/auth/Input";
 import BottomBox from "../components/auth/BottomBox";
 import {FatLink} from "../components/shared";
+import PageTitle from '../components/PageTitle';
 
 const HeaderContainer = styled.div`
     display: flex;
@@ -49,6 +50,7 @@ const Terms = styled.p`
 function Signup() {
     return (
         <AuthLayout>
+            <PageTitle title="Sign up | Instaclone" />
             <FormBox>
                 <HeaderContainer>
                     <img src="/img/Instagram_logo.svg" alt="instagram-logo"/>

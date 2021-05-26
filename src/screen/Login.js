@@ -10,6 +10,7 @@ import Button from "../components/auth/Button";
 import Seperator from "../components/auth/Seperator";
 import Input from "../components/auth/Input";
 import BottomBox from "../components/auth/BottomBox";
+import PageTitle from '../components/PageTitle';
 
 const FacebookLogin = styled.div`
     width: 100%;
@@ -23,15 +24,16 @@ const FacebookLogin = styled.div`
 `
 
 function Login() {
-
+    
     return (
         <AuthLayout>
+            <PageTitle title="Log in | Instaclone" />
             <FormBox>
                 <img src="/img/Instagram_logo.svg" alt="instagram-logo"/>
                 <form>
-                    <Input type="text" placeholder="Username" />
+                    <Input type="text" placeholder="Username"  />
                     <Input type="current-password" placeholder="Password" />
-                    <Button type="submit" value="Log in" />
+                    <Button type="submit" value="Log in"  />
                 </form>
                 <Seperator />
                 <FacebookLogin>
