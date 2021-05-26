@@ -5,7 +5,7 @@ const StyledInput = styled.input`
     width:100%;
     padding: 10px 7px;
     background-color: #fafafa;
-    border: 0.5px solid ${(props) => props.theme.borderColor};
+    border: 0.5px solid ${(props) => props.hasError ? "red" : props.theme.borderColor};
     border-radius: 5px;
     box-sizing: border-box;
     

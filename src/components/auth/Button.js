@@ -11,6 +11,7 @@ const StyledButton = styled.input`
     font-weight: 600;
     transition: 0.3s opacity ease-in-out; 
     padding: 10px 7px;
+    opacity: ${props => props.disabled ? 0.3 : 1}
 `
 
 

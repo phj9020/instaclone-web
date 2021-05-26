@@ -11,6 +11,8 @@ import Seperator from "../components/auth/Seperator";
 import Input from "../components/auth/Input";
 import BottomBox from "../components/auth/BottomBox";
 import PageTitle from '../components/PageTitle';
+import { useForm } from "react-hook-form";
+import FormError from "../components/auth/FormError";
 
 const FacebookLogin = styled.div`
     width: 100%;
@@ -23,17 +25,45 @@ const FacebookLogin = styled.div`
     }
 `
 
+
+
 function Login() {
     
+    const {register, handleSubmit, formState :{errors, isValid}} = useForm({mode: "onChange"});
+    const onSubmitValid = data => {
+
+        // console.log("valid", data);
+    }
+
+    
+    console.log("errors", errors)
+    console.log("isValid", isValid)
     return (
         <AuthLayout>
             <PageTitle title="Log in | Instaclone" />
             <FormBox>
                 <img src="/img/Instagram_logo.svg" alt="instagram-logo"/>
-                <form>
-                    <Input type="text" placeholder="Username"  />
-                    <Input type="current-password" placeholder="Password" />
-                    <Button type="submit" value="Log in"  />
+                <form onSubmit={handleSubmit(onSubmitValid)}>
+                    <FormError message={errors?.username?.message} />
+                    <Input {...register("username", { 
+                        required: "username is required", 
+                        minLength: {value: 6, message:"Username should be longer than 6 characters"} 
+                        })}  
+                        type="text" 
+                        placeholder="Username"
+                        hasError={Boolean(errors?.username?.message)}
+                        />
+                    <FormError message={errors?.password?.message} />
+                    <Input {...register("password", 
+                    { required: "password is required", 
+                    minLength: {value: 6, message:"Password should be longer than 6 characters"} 
+                    })} 
+                        type="password" 
+                        autoComplete="off" 
+                        placeholder="Password" 
+                        hasError={Boolean(errors?.password?.message)}
+                    />
+                    <Button type="submit" value="Log in"  disabled={!isValid} />
                 </form>
                 <Seperator />
                 <FacebookLogin>
