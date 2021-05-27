@@ -1,11 +1,13 @@
 import React from 'react';
-import { isLoggedInVar } from '../apollo';
+import { logUserOut } from '../apollo';
+import PageTitle from '../components/PageTitle';
 
 function Home() {
     return (
         <div>
-            <h1>Home</h1>
-            <button onClick={()=> isLoggedInVar(false)}>Log out</button>
+            <PageTitle title="Home" />
+            <h1>Home: Welcome</h1>
+            <button onClick={logUserOut}>Log out</button>
         </div>
     )
 }

@@ -13,6 +13,8 @@ import BottomBox from "../components/auth/BottomBox";
 import PageTitle from '../components/PageTitle';
 import { useForm } from "react-hook-form";
 import FormError from "../components/auth/FormError";
+import { useMutation, gql } from '@apollo/client';
+import {logUserIn} from "../apollo";
 
 const FacebookLogin = styled.div`
     width: 100%;
@@ -25,19 +27,59 @@ const FacebookLogin = styled.div`
     }
 `
 
+const LOGIN_MUTATION = gql`
+    mutation login($username: String!, $password: String!){
+        login(username: $username, password: $password) {
+            ok
+            token
+            error
+        }
+    }
+`
 
 
 function Login() {
-    
-    const {register, handleSubmit, formState :{errors, isValid}} = useForm({mode: "onChange"});
-    const onSubmitValid = data => {
+    const {register, handleSubmit, formState :{errors, isValid}, getValues, setError, clearErrors} = useForm({mode: "onChange"});
 
-        console.log("valid", data);
-    }
 
-    
+    const [login, {loading}] = useMutation(LOGIN_MUTATION, {
+        // to find out whether mutation started or finished 
+        onCompleted: (data) => { 
+            const {login : {ok, token, error}} = data;
+            if(!ok) {
+                return setError("result", {
+                    message: error
+                })
+            };
+            if(token) {
+                logUserIn(token);
+            };
+        }
+    });
+
+    const onSubmitValid = () => {
+        if(loading) {
+            return;
+        };
+
+        // getValues function  get input values from form    
+        const {username, password} = getValues();
+
+        // call login function with data variables 
+        login({
+            variables: {
+                username, password
+            }
+        });
+    };
+
     console.log("errors", errors)
     console.log("isValid", isValid)
+
+    const clearLoginError = () => {
+        clearErrors("result");
+    };
+
     return (
         <AuthLayout>
             <PageTitle title="Log in" />
@@ -48,22 +90,25 @@ function Login() {
                     <Input {...register("username", { 
                         required: "username is required", 
                         minLength: {value: 6, message:"Username should be longer than 6 characters"} 
-                        })}  
+                        })}
+                        onFocus={clearLoginError}
                         type="text" 
                         placeholder="Username"
                         hasError={Boolean(errors?.username?.message)}
                         />
                     <FormError message={errors?.password?.message} />
-                    <Input {...register("password", 
-                    { required: "password is required", 
-                    minLength: {value: 3, message:"Password should be longer than 3 characters"} 
-                    })} 
+                    <Input {...register("password", {   
+                        required: "password is required", 
+                        minLength: {value: 3, message:"Password should be longer than 3 characters"} 
+                        })}
+                        onFocus={clearLoginError}  
                         type="password" 
                         autoComplete="off" 
                         placeholder="Password" 
                         hasError={Boolean(errors?.password?.message)}
                     />
-                    <Button type="submit" value="Log in"  disabled={!isValid} />
+                    <FormError message={errors?.result?.message} />
+                    <Button type="submit" value={loading ? "Loading..." : "Log in"}  disabled={!isValid || loading} />
                 </form>
                 <Seperator />
                 <FacebookLogin>
