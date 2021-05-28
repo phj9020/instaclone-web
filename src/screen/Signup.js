@@ -11,6 +11,10 @@ import Input from "../components/auth/Input";
 import BottomBox from "../components/auth/BottomBox";
 import {FatLink} from "../components/shared";
 import PageTitle from '../components/PageTitle';
+import { useMutation, gql } from '@apollo/client';
+import { useForm } from 'react-hook-form';
+import FormError from "../components/auth/FormError";
+import { useHistory } from "react-router-dom";
 
 const HeaderContainer = styled.div`
     display: flex;
@@ -47,7 +51,60 @@ const Terms = styled.p`
     line-height:1.5;
 `
 
+const CREATE_ACCOUNT = gql`
+    mutation createAccount(
+        $firstName: String!
+        $lastName: String
+        $username: String!
+        $email: String!
+        $password: String!) {
+            createAccount(firstName:$firstName, lastName:$lastName, username:$username, email:$email, password:$password) {
+                ok
+                error
+            }
+        }
+`
+
 function Signup() {
+    const history = useHistory();
+
+    const {register, handleSubmit, formState :{errors, isValid}, setError, clearErrors, getValues} = useForm({mode: "onChange"});
+
+    const [createAccount, {loading}] = useMutation(CREATE_ACCOUNT, {
+        onCompleted: (data) => {
+            const {createAccount : {ok, error}} = data;
+            const {username, password} = getValues();
+
+            if(!ok) {
+                return setError("result", {
+                    message: error
+                })
+            };
+            //redirect user to "/" with data
+            history.push(routes.home, {message: "Account Created, Please Log in", username, password} );
+        }
+    })
+    
+    const onSubmitValid = (data)=> {
+        if(loading) {
+            return;
+        };
+
+        createAccount({
+            variables: {
+                ...data
+            }
+        })
+
+    };
+
+    const clearLoginError = () => {
+        clearErrors("result");
+    }
+
+    // console.log("errors", errors)
+    // console.log("isValid", isValid)
+
     return (
         <AuthLayout>
             <PageTitle title="Sign up" />
@@ -61,12 +118,23 @@ function Signup() {
                     Log in With Facebook
                 </SocialButton>
                 <Seperator />
-                <form>
-                    <Input type="email" placeholder="Email" />
-                    <Input type="text" placeholder="Full Name" />
-                    <Input type="text" placeholder="Username" />
-                    <Input type="current-password" placeholder="Password" />
-                    <Button type="submit" value="Sign up" />
+                <form onSubmit={handleSubmit(onSubmitValid)}>
+                    <FormError message={errors?.email?.message} />
+                    <Input {...register("email", { required: "email is required"})} 
+                        type="email" placeholder="Email" onFocus={clearLoginError} />
+                    <FormError message={errors?.firstName?.message} />
+                    <Input {...register("firstName", { required: "firstname is required"})} 
+                        type="text" placeholder="First Name" onFocus={clearLoginError} />
+                    <Input {...register("lastName", { })}  
+                        type="text" placeholder="Last Name" onFocus={clearLoginError} />
+                    <FormError message={errors?.username?.message} />
+                    <Input {...register("username", { required: "username is required", minLength: {value: 6, message:"Username should be longter than 6 characters"}})}  
+                        type="text" placeholder="Username" onFocus={clearLoginError} />
+                    <FormError message={errors?.password?.message} />
+                    <Input {...register("password", { required: "password is required", minLength: {value: 3, message:"Password should be longter than 3 characters"}})} 
+                        type="password" placeholder="Password" onFocus={clearLoginError} autoComplete="off" />
+                    <FormError message={errors?.result?.message} />
+                    <Button type="submit" value={loading ? "Loading..." : "Sign up"} disabled={!isValid || loading} />
                 </form>
                 <Terms>By Signing up, you agree toour Terms, Data Policy and Cookies Policy</Terms>
             </FormBox>

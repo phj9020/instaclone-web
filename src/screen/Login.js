@@ -2,20 +2,40 @@ import React from 'react';
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import routes from "../routes";
 import AuthLayout from "../components/auth/AuthLayout";
 import FormBox from "../components/auth/FormBox";
 import Button from "../components/auth/Button";
 import Seperator from "../components/auth/Seperator";
-import Input from "../components/auth/Input";
 import BottomBox from "../components/auth/BottomBox";
 import PageTitle from '../components/PageTitle';
 import { useForm } from "react-hook-form";
 import FormError from "../components/auth/FormError";
 import { useMutation, gql } from '@apollo/client';
 import {logUserIn} from "../apollo";
+import Notification from "../components/auth/Notification";
 
+const StyledInput = styled.input`
+    width:100%;
+    padding: 10px 7px;
+    background-color: #fafafa;
+    border: 0.5px solid ${(props) => props.hasError ? "red" : props.theme.borderColor};
+    border-radius: 5px;
+    box-sizing: border-box;
+    
+    &::placeholder{
+        font-size: 12px;
+    }
+
+    &:not(:last-child) {
+        margin-bottom: 5px;
+    }
+
+    &:focus {
+        border-color: ${(props)=> props.theme.accent};
+    }
+`
 const FacebookLogin = styled.div`
     width: 100%;
     display: flex;
@@ -38,10 +58,18 @@ const LOGIN_MUTATION = gql`
 `
 
 
+
 function Login() {
-    const {register, handleSubmit, formState :{errors, isValid}, getValues, setError, clearErrors} = useForm({mode: "onChange"});
-
-
+    const location = useLocation();
+    console.log(location)
+    const {register, handleSubmit, formState :{errors, isValid}, getValues, setError, clearErrors} = useForm({
+        mode: "onChange", 
+        defaultValues:{
+            username: location?.state?.username || "",
+            password: location?.state?.password || "",
+        }
+    });
+    
     const [login, {loading}] = useMutation(LOGIN_MUTATION, {
         // to find out whether mutation started or finished 
         onCompleted: (data) => { 
@@ -73,21 +101,22 @@ function Login() {
         });
     };
 
-    console.log("errors", errors)
-    console.log("isValid", isValid)
 
     const clearLoginError = () => {
         clearErrors("result");
     };
+
+    
 
     return (
         <AuthLayout>
             <PageTitle title="Log in" />
             <FormBox>
                 <img src="/img/Instagram_logo.svg" alt="instagram-logo"/>
+                <Notification message={location?.state?.message} />
                 <form onSubmit={handleSubmit(onSubmitValid)}>
                     <FormError message={errors?.username?.message} />
-                    <Input {...register("username", { 
+                    <StyledInput {...register("username", { 
                         required: "username is required", 
                         minLength: {value: 6, message:"Username should be longer than 6 characters"} 
                         })}
@@ -97,7 +126,7 @@ function Login() {
                         hasError={Boolean(errors?.username?.message)}
                         />
                     <FormError message={errors?.password?.message} />
-                    <Input {...register("password", {   
+                    <StyledInput {...register("password", {   
                         required: "password is required", 
                         minLength: {value: 3, message:"Password should be longer than 3 characters"} 
                         })}
