@@ -6,6 +6,7 @@ import { isLoggedInVar, logUserOut } from "../apollo";
 const ME_QUERY = gql`
     query me {
         me {
+            id
             username
             avatar
         }
@@ -21,7 +22,7 @@ function useUser(){
     const {data} = useQuery(ME_QUERY, {
         skip: !hasToken
     });
-    console.log(data);
+    // console.log(data);
     useEffect(()=> {
         if(data?.me === null) {
             console.log("There is a token on localStorage but not working on back-end");
@@ -29,7 +30,7 @@ function useUser(){
         }
     },[data])
 
-    return;
+    return {data: data};
 }
 
 export default useUser;

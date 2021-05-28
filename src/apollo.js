@@ -22,6 +22,7 @@ export const logUserOut = (history) => {
     if(history) {
         history.replace();
     }
+    window.location.reload();
 }
 
 export const darkModeVar = makeVar(Boolean(localStorage.getItem(DARK_MODE)));

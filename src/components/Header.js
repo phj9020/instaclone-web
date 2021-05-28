@@ -5,10 +5,11 @@ import styled from "styled-components";
 import { useReactiveVar } from '@apollo/client';
 import {isLoggedInVar} from "../apollo";
 import { faHome } from '@fortawesome/free-solid-svg-icons';
-import { faCompass, faUser } from '@fortawesome/free-regular-svg-icons';
+import { faCompass } from '@fortawesome/free-regular-svg-icons';
 import { Link } from 'react-router-dom';
 import routes from "../routes";
 import useUser from "../hooks/useUser";
+import Avatar from './Avatar';
 
 const StyledHeader = styled.header`
     width: 100%;
@@ -42,10 +43,16 @@ const Button = styled.span`
 
 `
 
+const IconsContainer = styled.div`
+    display: flex;
+    align-items: center;
+`
+
 
 function Header() {
     const isLoggedIn = useReactiveVar(isLoggedInVar);
-    const loggedInUser = useUser();
+    const {data} = useUser();
+    console.log(data);
 
     return (
         <StyledHeader>
@@ -55,17 +62,18 @@ function Header() {
                 </Column>
                 <Column>
                     {isLoggedIn ? 
-                        <>
+                        <IconsContainer>
                             <Icon>
-                                <FontAwesomeIcon icon={faHome} size="lg" />
+                                <FontAwesomeIcon icon={faHome} size="2x" />
                             </Icon>
                             <Icon>
-                                <FontAwesomeIcon icon={faCompass} size="lg" />
+                                <FontAwesomeIcon icon={faCompass} size="2x" />
                             </Icon>
                             <Icon>
-                                <FontAwesomeIcon icon={faUser} size="lg" />
+                                <Avatar url={data?.me?.avatar} />
                             </Icon>
-                        </>
+                            
+                        </IconsContainer>
                         : 
                         <Link to={routes.home} >
                             <Button>Login</Button>
