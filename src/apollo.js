@@ -12,11 +12,12 @@ export const logUserIn = (token) => {
     isLoggedInVar(true);
 }
 
-export const logUserOut = () => {
+export const logUserOut = (history) => {
     // remove token 
     localStorage.removeItem(TOKEN);
     // log user out
     isLoggedInVar(false);
+    history.replace();
 }
 
 export const darkModeVar = makeVar(Boolean(localStorage.getItem(DARK_MODE)));

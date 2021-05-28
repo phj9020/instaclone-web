@@ -7,13 +7,13 @@ import { useHistory } from "react-router-dom";
 function Home() {
     // to clear location.state in Login
     const history = useHistory();
-    history.replace();
+    
 
     return (
         <div>
             <PageTitle title="Home" />
             <h1>Home: Welcome</h1>
-            <button onClick={logUserOut}>Log out</button>
+            <button onClick={()=> logUserOut(history)}>Log out</button>
         </div>
     )
 }
