@@ -4,12 +4,22 @@ import reset from 'styled-reset';
 // Define Theme 
 export const lightTheme = {
     accent: "#0095f6",
+    fontColor: "rgb(38,38,38)",
+    bgColor: "#fafafa",
     borderColor: "rgb(219, 219, 219)",
+    boxColor: "white",
+    warningColor: "red",
+    termsColor: "rgb(142, 142, 142)",
 };
 
 export const darkTheme = {
-    fontColor: "white",
-    bgColor: "#2c2c2c"
+    accent: "#c395fe",
+    fontColor: "#1f162e",
+    bgColor: "#474747",
+    borderColor: "rgb(205, 217, 229)",
+    boxColor: "#727272",
+    warningColor: "#ff6F00",
+    termsColor: "white",
 };
 
 export const GlobalStyle = createGlobalStyle`
@@ -22,10 +32,10 @@ export const GlobalStyle = createGlobalStyle`
         all: unset;
     }
     body {
-        background-color: #fafafa;
+        background-color: ${props => props.theme.bgColor};
         font-size: 14px;
         font-family: 'Open Sans', sans-serif;
-        color: rgb(38,38,38);
+        color: ${props => props.theme.fontColor};
     }
     a {
         text-decoration: none;

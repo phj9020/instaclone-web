@@ -7,7 +7,6 @@ import AuthLayout from "../components/auth/AuthLayout";
 import FormBox from "../components/auth/FormBox";
 import Button from "../components/auth/Button";
 import Seperator from "../components/auth/Seperator";
-import Input from "../components/auth/Input";
 import BottomBox from "../components/auth/BottomBox";
 import {FatLink} from "../components/shared";
 import PageTitle from '../components/PageTitle';
@@ -27,6 +26,7 @@ const Subtitle = styled(FatLink)`
     text-align: center;
     margin: 15px 0px;
     line-height: 1.5;
+    color: ${props => props.theme.termsColor};
 `
 const SocialButton = styled.button`
     all: unset;
@@ -43,11 +43,32 @@ const SocialButton = styled.button`
     transition: 0.3s opacity ease-in-out;
 `
 
+const StyledInput = styled.input`
+    width:100%;
+    padding: 10px 7px;
+    background-color: #fafafa;
+    border: 0.5px solid ${(props) => props.hasError ? "red" : props.theme.borderColor};
+    border-radius: 5px;
+    box-sizing: border-box;
+    
+    &::placeholder{
+        font-size: 12px;
+    }
+
+    &:not(:last-child) {
+        margin-bottom: 5px;
+    }
+
+    &:focus {
+        border-color: ${(props)=> props.theme.accent};
+    }
+`
+
 const Terms = styled.p`
     width: 100%;
     text-align: center;
     font-size: 12px;
-    color: rgb(142, 142, 142);
+    color: ${(props)=> props.theme.termsColor};
     line-height:1.5;
 `
 
@@ -120,18 +141,18 @@ function Signup() {
                 <Seperator />
                 <form onSubmit={handleSubmit(onSubmitValid)}>
                     <FormError message={errors?.email?.message} />
-                    <Input {...register("email", { required: "email is required"})} 
+                    <StyledInput {...register("email", { required: "Email is required"})} 
                         type="email" placeholder="Email" onFocus={clearLoginError} />
                     <FormError message={errors?.firstName?.message} />
-                    <Input {...register("firstName", { required: "firstname is required"})} 
+                    <StyledInput {...register("firstName", { required: "Firstname is required"})} 
                         type="text" placeholder="First Name" onFocus={clearLoginError} />
-                    <Input {...register("lastName", { })}  
+                    <StyledInput {...register("lastName", { })}  
                         type="text" placeholder="Last Name" onFocus={clearLoginError} />
                     <FormError message={errors?.username?.message} />
-                    <Input {...register("username", { required: "username is required", minLength: {value: 6, message:"Username should be longter than 6 characters"}})}  
+                    <StyledInput {...register("username", { required: "Username is required", minLength: {value: 6, message:"Username should be longter than 6 characters"}})}  
                         type="text" placeholder="Username" onFocus={clearLoginError} />
                     <FormError message={errors?.password?.message} />
-                    <Input {...register("password", { required: "password is required", minLength: {value: 3, message:"Password should be longter than 3 characters"}})} 
+                    <StyledInput {...register("password", { required: "Password is required", minLength: {value: 3, message:"Password should be longter than 3 characters"}})} 
                         type="password" placeholder="Password" onFocus={clearLoginError} autoComplete="off" />
                     <FormError message={errors?.result?.message} />
                     <Button type="submit" value={loading ? "Loading..." : "Sign up"} disabled={!isValid || loading} />

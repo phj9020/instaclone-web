@@ -61,7 +61,6 @@ const LOGIN_MUTATION = gql`
 
 function Login() {
     const location = useLocation();
-    console.log(location)
     const {register, handleSubmit, formState :{errors, isValid}, getValues, setError, clearErrors} = useForm({
         mode: "onChange", 
         defaultValues:{
@@ -117,7 +116,7 @@ function Login() {
                 <form onSubmit={handleSubmit(onSubmitValid)}>
                     <FormError message={errors?.username?.message} />
                     <StyledInput {...register("username", { 
-                        required: "username is required", 
+                        required: "Username is required", 
                         minLength: {value: 6, message:"Username should be longer than 6 characters"} 
                         })}
                         onFocus={clearLoginError}
@@ -127,7 +126,7 @@ function Login() {
                         />
                     <FormError message={errors?.password?.message} />
                     <StyledInput {...register("password", {   
-                        required: "password is required", 
+                        required: "Password is required", 
                         minLength: {value: 3, message:"Password should be longer than 3 characters"} 
                         })}
                         onFocus={clearLoginError}  

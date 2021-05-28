@@ -2,8 +2,8 @@ import React from 'react';
 import styled from "styled-components";
 
 const ErrorMessage = styled.span`
-    color: red;
-    font-size: 8px;
+    color: ${(props)=> props.theme.warningColor};;
+    font-size: 10px;
     margin: 5px 0px;
 `
 
