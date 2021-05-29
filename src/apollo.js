@@ -37,6 +37,7 @@ export const disableDarkMode = ()=> {
     darkModeVar(false);
 }
 
+// put token in headders 
 const httpLink = createHttpLink({
     uri: 'http://localhost:4000/graphql',
 });
