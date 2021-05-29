@@ -14,7 +14,7 @@ export const lightTheme = {
 
 export const darkTheme = {
     accent: "#c395fe",
-    fontColor: "#1f162e",
+    fontColor: "#faf7ff",
     bgColor: "#474747",
     borderColor: "rgb(205, 217, 229)",
     boxColor: "#727272",

@@ -23,6 +23,7 @@ const StyledInput = styled.input`
     border: 0.5px solid ${(props) => props.hasError ? "red" : props.theme.borderColor};
     border-radius: 5px;
     box-sizing: border-box;
+    color: black;
     
     &::placeholder{
         font-size: 12px;
