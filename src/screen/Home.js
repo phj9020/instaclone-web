@@ -1,12 +1,7 @@
 import React from 'react';
 import PageTitle from '../components/PageTitle';
 import { useQuery, gql } from '@apollo/client';
-import styled from 'styled-components';
-import Avatar from '../components/Avatar';
-import { FatText } from '../components/shared';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark, faComment, faHeart, faPaperPlane } from '@fortawesome/free-regular-svg-icons';
-
+import Photo from '../components/feed/Photo';
 
 const FEED_QUERY = gql`
     query seeFeed($page: Int!) {
@@ -22,55 +17,10 @@ const FEED_QUERY = gql`
             comments
             createdAt
             isMine
+            isLiked
         }
     }
 `
-const PhotoContainer = styled.div`
-    background-color: ${props => props.theme.boxColor};
-    border: 1px solid ${props => props.theme.borderColor};
-    margin-bottom: 50px;
-    max-width:615px;
-    width: 100%;
-`
-
-const PhotoHeader = styled.div`
-    padding: 15px;
-    display: flex;
-    align-items: center;
-`
-
-const Username = styled(FatText)`
-    margin-left: 15px;
-`
-
-const PhotoFile = styled.img`
-    width: 100%;
-`
-
-const PhotoData = styled.div`
-    padding: 10px 16px;
-`
-
-const PhotoActions = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items : center;
-
-    div {
-    display: flex;
-    align-items: center;
-    }
-`
-
-const PhotoAction = styled.div`
-    margin-right: 10px;
-`
-
-const Likes = styled(FatText)`
-    margin-top: 10px;
-    display: block;
-`
-
 function Home() {
     
     const {data} = useQuery(FEED_QUERY, {
@@ -85,26 +35,8 @@ function Home() {
         <div>
             <PageTitle title="Home" />
             {data?.seeFeed?.map(photo => 
-            <PhotoContainer key={photo.id}>
-                <PhotoHeader>
-                    <Avatar url={photo.user.avatar} lg={true} />
-                    <Username>{photo.user.username}</Username>
-                </PhotoHeader>
-                <PhotoFile src={photo.file} alt="insta post" />
-                <PhotoData>
-                    <PhotoActions>
-                        <div>
-                            <PhotoAction><FontAwesomeIcon icon={faHeart} size="2x"/></PhotoAction>
-                            <PhotoAction><FontAwesomeIcon icon={faComment} size="2x"/></PhotoAction>
-                            <PhotoAction><FontAwesomeIcon icon={faPaperPlane} size="2x"/></PhotoAction>
-                        </div>
-                        <div>
-                            <FontAwesomeIcon icon={faBookmark} size="2x" />
-                        </div>
-                    </PhotoActions>
-                    <Likes>{photo.likes === 1 ? "1 like" : `${photo.likes} likes` }</Likes>
-                </PhotoData>
-            </PhotoContainer>) }
+                <Photo key={photo.id} {...photo} />
+            )}
         </div>
     )
 }

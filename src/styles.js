@@ -20,6 +20,7 @@ export const darkTheme = {
     boxColor: "#727272",
     warningColor: "#ff6F00",
     termsColor: "white",
+    
 };
 
 export const GlobalStyle = createGlobalStyle`
