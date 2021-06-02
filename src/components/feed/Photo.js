@@ -69,10 +69,60 @@ const TOGGLE_LIKE_MUTATION = gql`
 `
 
 function Photo({id, user, file, isLiked, likes}) {
+    
+    const updateToggleLike = (cache, result)=> {
+        const { data : { toggleLike : {ok}}} = result;
+        if(ok) {
+
+            const fragmentId = `Photo:${id}`;
+            const fragment = gql`
+                # fragment name on __typename
+                fragment BSName on Photo {
+                    isLiked,
+                    likes
+                }
+            `;
+            
+            /*  
+            // CASE1 : read and Update Fragment if isLiked and likes doesnt exist  
+            const result = cache.readFragment({
+                id:fragmentId,
+                fragment: fragment,  
+            })
+
+            if("isLiked" in result && "likes" in result) {
+                const { isLiked: cacheIsLiked, likes: cacheLikes } = result;
+                // write Fragment
+                cache.writeFragment({
+                    id: fragmentId,
+                    fragment: fragment,
+                    data: {
+                        isLiked: !cacheIsLiked,
+                        likes: cacheIsLiked ? cacheLikes - 1 : cacheLikes + 1,
+                    }
+                })
+            }
+            */
+
+            // CASE 2 : update cache : using cache
+            cache.writeFragment({
+                // fragment id & fragment 
+                id: fragmentId,
+                fragment: fragment,
+                data: {
+                    // isLiked 필드에 prop에서 받아온 isLiked의 반대값을 설정
+                    isLiked: !isLiked,
+                    likes: isLiked ? likes - 1 : likes + 1,
+                },
+            });
+        };
+    };
+    
     const [toggleLike, {loading}] = useMutation(TOGGLE_LIKE_MUTATION, {
         variables: {
             id: id
-        }
+        },
+        update: updateToggleLike,
     });
 
 
