@@ -7,6 +7,7 @@ import { faHeart as SolidHeart } from '@fortawesome/free-solid-svg-icons';
 import { FatText } from '../shared';
 import Avatar from "../Avatar";
 import { gql, useMutation } from '@apollo/client';
+import Comments from './Comments';
 
 const PhotoContainer = styled.div`
     background-color: ${props => props.theme.boxColor};
@@ -68,7 +69,7 @@ const TOGGLE_LIKE_MUTATION = gql`
     }
 `
 
-function Photo({id, user, file, isLiked, likes}) {
+function Photo({id, user, file, isLiked, likes, caption, commentNumber, comments}) {
     
     const updateToggleLike = (cache, result)=> {
         const { data : { toggleLike : {ok}}} = result;
@@ -118,14 +119,14 @@ function Photo({id, user, file, isLiked, likes}) {
         };
     };
     
-    const [toggleLike, {loading}] = useMutation(TOGGLE_LIKE_MUTATION, {
+    const [toggleLike] = useMutation(TOGGLE_LIKE_MUTATION, {
         variables: {
             id: id
         },
         update: updateToggleLike,
     });
 
-
+    console.log(comments)
     
     return (
         <PhotoContainer key={id}>
@@ -148,6 +149,7 @@ function Photo({id, user, file, isLiked, likes}) {
                     </div>
                 </PhotoActions>
                 <Likes>{likes === 1 ? "1 like" : `${likes} likes` }</Likes>
+                <Comments comments={comments} author={user.username} caption={caption} commentNumber={commentNumber} />
             </PhotoData>
         </PhotoContainer>
     )
@@ -162,7 +164,9 @@ Photo.propTypes = {
     }),
     file: PropTypes.string.isRequired,
     isLiked: PropTypes.bool.isRequired, 
-    likes: PropTypes.number.isRequired
+    likes: PropTypes.number.isRequired,
+    caption: PropTypes.string,
+    commentNumber: PropTypes.number.isRequired,
 }
 
 export default Photo;

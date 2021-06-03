@@ -14,10 +14,20 @@ const FEED_QUERY = gql`
             file
             caption
             likes
-            comments
             createdAt
             isMine
             isLiked
+            commentNumber
+            comments {
+                id
+                payload
+                isMine
+                createdAt
+                user {
+                    avatar
+                    username
+                }
+            }
         }
     }
 `
