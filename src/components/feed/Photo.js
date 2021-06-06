@@ -76,14 +76,28 @@ function Photo({id, user, file, isLiked, likes, caption, commentNumber, comments
         if(ok) {
 
             const fragmentId = `Photo:${id}`;
-            const fragment = gql`
-                # fragment name on __typename
-                fragment BSName on Photo {
-                    isLiked,
-                    likes
+            // const fragment = gql`
+            //     # fragment name on __typename
+            //     fragment BSName on Photo {
+            //         isLiked,
+            //         likes
+            //     }
+            // `;
+            /* CASE3 : modify cache : better way and Dont need fragment */
+            cache.modify({
+                id: fragmentId,
+                fields:{
+                    isLiked(prev) {
+                        return !prev
+                    },
+                    likes(prev) {
+                        if(isLiked){
+                            return prev - 1;
+                        }
+                        return prev + 1;
+                    }
                 }
-            `;
-            
+            })
             /*  
             // CASE1 : read and Update Fragment if isLiked and likes doesnt exist  
             const result = cache.readFragment({
@@ -106,6 +120,7 @@ function Photo({id, user, file, isLiked, likes, caption, commentNumber, comments
             */
 
             // CASE 2 : update cache : using cache
+            /*
             cache.writeFragment({
                 // fragment id & fragment 
                 id: fragmentId,
@@ -116,6 +131,7 @@ function Photo({id, user, file, isLiked, likes, caption, commentNumber, comments
                     likes: isLiked ? likes - 1 : likes + 1,
                 },
             });
+            */
         };
     };
     

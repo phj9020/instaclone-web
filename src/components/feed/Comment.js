@@ -28,9 +28,9 @@ function Comment({author, payload}) {
     return (
         <CommentContainer>
             <FatText>{author}</FatText>
-            <CommentCaption>{payload.split(" ").map((word, index) => /#[\w]+/g.test(word) ? 
+            <CommentCaption>{payload.split(" ").map((word, index) => /#[\w]+/.test(word) ? 
                 <React.Fragment key={index}>
-                    <Link to={`/hasgtags/${word}`}>{word}</Link>{" "} 
+                    <Link to={`/hashtags/${word}`}>{word}</Link>{" "} 
                 </React.Fragment> 
                 :
                 <React.Fragment key={index}>
