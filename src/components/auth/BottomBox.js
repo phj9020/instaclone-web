@@ -10,6 +10,7 @@ const StyledBottomBox = styled(BaseBox)`
 
     a {
         color: ${(props)=> props.theme.accent};
+        margin-left: 5px;
     }
 `
 

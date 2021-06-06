@@ -45,6 +45,7 @@ const FacebookLogin = styled.div`
 
     a {
         color: #385285;
+        margin-left: 5px;
     }
 `
 

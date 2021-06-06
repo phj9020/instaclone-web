@@ -40,7 +40,6 @@ export const GlobalStyle = createGlobalStyle`
     }
     a {
         text-decoration: none;
-        margin-left: 5px;
         font-weight: 600;
     }
 `

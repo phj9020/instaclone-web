@@ -2,22 +2,42 @@ import React from 'react';
 import styled from 'styled-components';
 import { FatText } from '../shared';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 const CommentContainer = styled.div``
 
 const CommentCaption = styled.span`
     margin-left: 10px;
+
+    a {
+        background-color:inherit;
+        color: ${props => props.theme.accent};
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 `
 
 function Comment({author, payload}) {
-    // to do : make it hash tag 
+    
     // to do : delete comment if isMine is true
 
 
     return (
         <CommentContainer>
             <FatText>{author}</FatText>
-            <CommentCaption>{payload}</CommentCaption>
+            <CommentCaption>{payload.split(" ").map((word, index) => /#[\w]+/g.test(word) ? 
+                <React.Fragment key={index}>
+                    <Link to={`/hasgtags/${word}`}>{word}</Link>{" "} 
+                </React.Fragment> 
+                :
+                <React.Fragment key={index}>
+                    {word}{" "}
+                </React.Fragment>
+                )}
+            </CommentCaption>
         </CommentContainer>
     )
 }
