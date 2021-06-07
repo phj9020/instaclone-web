@@ -116,7 +116,7 @@ function Comments({photoId, comments, author, caption, commentNumber}) {
                 <Comment author={author} payload={caption} />
                 <CommentCount>{commentNumber === 1 ? "1 comment" : `${commentNumber} comments`}</CommentCount>
                 {comments?.map(item => 
-                    <Comment key={item.id} author={item.user.username} payload={item.payload} />
+                    <Comment key={item.id} id={item.id} photoId={photoId} isMine={item.isMine} author={item.user.username} payload={item.payload} />
                 )}
                 <CreateCommentContainer>
                     <form onSubmit={handleSubmit(onValid)}>

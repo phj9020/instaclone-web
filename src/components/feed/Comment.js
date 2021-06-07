@@ -3,9 +3,11 @@ import styled from 'styled-components';
 import { FatText } from '../shared';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { useMutation, gql } from '@apollo/client';
 
 const CommentContainer = styled.div`
     margin-bottom:10px;
+    position:relative;
 `
 
 const CommentCaption = styled.span`
@@ -22,9 +24,61 @@ const CommentCaption = styled.span`
     }
 `
 
-function Comment({author, payload}) {
+const DelBtn = styled.button`
+    all: unset;
+    position:absolute;
+    right:0;
+    color: red;
+    cursor: pointer;
+
+`
+
+
+
+const DELETE_COMMENT_MUTATION = gql`
+    mutation deleteComment($id:Int!) {
+        deleteComment(id:$id) {
+            ok
+        }
+    }
+`
+
+function Comment({id, photoId, isMine, author, payload}) {
+    // delete comment if isMine is true
+    const updateDeleteComment = (cache, result) => {
+        const {data : {deleteComment : {ok}}} = result;
+
+        if(ok) {
+            // use evict() to delete 
+            cache.evict({
+                id: `Comment:${id}`
+            })
+            // modify Photo:id's commentNumber 
+            cache.modify({
+                id: `Photo:${photoId}`,
+                fields: {
+                    commentNumber(prev){
+                        return prev - 1;
+                    }
+                }
+            })
+        }
+    };
     
-    // to do : delete comment if isMine is true
+    const [deleteComment] = useMutation(DELETE_COMMENT_MUTATION, {
+        variables: {
+            id: id,
+        },
+        update: updateDeleteComment,
+    });
+
+    const onDeleteClick = ()=> {
+        deleteComment({
+            variables:{
+                id
+            }
+        });
+    };
 
 
     return (
@@ -40,11 +94,15 @@ function Comment({author, payload}) {
                 </React.Fragment>
                 )}
             </CommentCaption>
+            {isMine ? <DelBtn onClick={onDeleteClick}>X</DelBtn>: null}
         </CommentContainer>
     )
 }
 
 Comment.propTypes = {
+    id: PropTypes.number,
+    photoId: PropTypes.number,
+    isMine: PropTypes.bool,
     author: PropTypes.string.isRequired,
     payload: PropTypes.string,
 }
