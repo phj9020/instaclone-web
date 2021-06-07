@@ -8,6 +8,7 @@ import { FatText } from '../shared';
 import Avatar from "../Avatar";
 import { gql, useMutation } from '@apollo/client';
 import Comments from './Comments';
+import { Link } from 'react-router-dom';
 
 const PhotoContainer = styled.div`
     background-color: ${props => props.theme.boxColor};
@@ -21,6 +22,11 @@ const PhotoHeader = styled.div`
     padding: 15px;
     display: flex;
     align-items: center;
+
+    a {
+        color: inherit;
+        cursor: pointer;
+    }
 `
 
 const Username = styled(FatText)`
@@ -147,8 +153,12 @@ function Photo({id, user, file, isLiked, likes, caption, commentNumber, comments
     return (
         <PhotoContainer key={id}>
             <PhotoHeader>
-                <Avatar url={user.avatar} lg={true} />
-                <Username>{user.username}</Username>
+                <Link to={`/users/${user.username}`}>
+                    <Avatar url={user.avatar} lg={true} />
+                </Link>
+                <Link to={`/users/${user.username}`}>
+                    <Username>{user.username}</Username>
+                </Link>
             </PhotoHeader>
             <PhotoFile src={file} alt="insta post" />
             <PhotoData>

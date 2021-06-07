@@ -4,10 +4,17 @@ import { FatText } from '../shared';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useMutation, gql } from '@apollo/client';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 const CommentContainer = styled.div`
     margin-bottom:10px;
     position:relative;
+    
+    a {
+        color: inherit;
+        cursor:pointer;
+    }
 `
 
 const CommentCaption = styled.span`
@@ -83,7 +90,9 @@ function Comment({id, photoId, isMine, author, payload}) {
 
     return (
         <CommentContainer>
-            <FatText>{author}</FatText>
+            <Link to={`/users/${author}`}>
+                <FatText>{author}</FatText>
+            </Link>
             <CommentCaption>{payload.split(" ").map((word, index) => /#[\w]+/.test(word) ? 
                 <React.Fragment key={index}>
                     <Link to={`/hashtags/${word}`}>{word}</Link>{" "} 
@@ -94,7 +103,7 @@ function Comment({id, photoId, isMine, author, payload}) {
                 </React.Fragment>
                 )}
             </CommentCaption>
-            {isMine ? <DelBtn onClick={onDeleteClick}>X</DelBtn>: null}
+            {isMine ? <DelBtn onClick={onDeleteClick}><FontAwesomeIcon icon={faTrashAlt}/></DelBtn>: null}
         </CommentContainer>
     )
 }

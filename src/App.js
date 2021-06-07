@@ -13,6 +13,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { ApolloProvider } from '@apollo/client/react';
 import {client} from "./apollo";
 import Layout from './components/Layout';
+import Profile from './screen/Profile';
 
 
 function App() {
@@ -36,6 +37,9 @@ function App() {
                 :
                 null
               }
+              <Route path="/users/:username" >
+                <Profile />
+              </Route>
               <Route>
                 <NotFound />
               </Route>

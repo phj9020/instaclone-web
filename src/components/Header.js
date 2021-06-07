@@ -33,6 +33,11 @@ const Column = styled.div``
 
 const Icon = styled.span`
     margin-left: 15px;
+
+    a {
+        color: inherit;
+        cursor: pointer;
+    }
 `
 const Button = styled.span`
     background-color: ${props => props.theme.accent};
@@ -46,13 +51,14 @@ const Button = styled.span`
 const IconsContainer = styled.div`
     display: flex;
     align-items: center;
+
 `
 
 
 function Header() {
     const isLoggedIn = useReactiveVar(isLoggedInVar);
     const {data} = useUser();
-    // console.log(data);
+    console.log(data);
 
     return (
         <StyledHeader>
@@ -64,13 +70,17 @@ function Header() {
                     {isLoggedIn ? 
                         <IconsContainer>
                             <Icon>
-                                <FontAwesomeIcon icon={faHome} size="2x" />
+                                <Link to={routes.home}>
+                                    <FontAwesomeIcon icon={faHome} size="2x" />
+                                </Link>
                             </Icon>
                             <Icon>
                                 <FontAwesomeIcon icon={faCompass} size="2x" />
                             </Icon>
                             <Icon>
-                                <Avatar url={data?.me?.avatar} />
+                                <Link to={`/users/${data?.me?.username}`}>
+                                    <Avatar url={data?.me?.avatar} />
+                                </Link>
                             </Icon>
                             
                         </IconsContainer>
