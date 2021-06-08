@@ -1,11 +1,12 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useParams} from "react-router-dom";
-import {useQuery, gql} from "@apollo/client";
+import {useQuery, gql, useMutation} from "@apollo/client";
 import {PHOTO_FRAGMENT} from "../fragments";
 import styled from "styled-components";
 import PageTitle from '../components/PageTitle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment, faHeart } from '@fortawesome/free-regular-svg-icons';
+import useUser from '../hooks/useUser';
 
 const ProfileContainer = styled.div``
 
@@ -45,6 +46,7 @@ const ProfileInfo = styled.div`
 
 const Row = styled.div`
     display: flex;
+    align-items: center;
     margin: 10px 0px;
     span {
         display: flex;
@@ -104,6 +106,7 @@ const Icons = styled.div`
     color:white;
     opacity:0;
     transition: opacity 0.3s ease-in-out;
+        cursor: pointer;
     &:hover {
         opacity: 1;
     }
@@ -118,6 +121,17 @@ const Icon = styled.span`
         margin-right: 5px;
     }
 `
+
+const ProfileBtn = styled.button`
+    all: unset;
+    background-color: ${props => props.theme.accent};
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 8px 10px;
+    margin-left: 20px;
+    cursor: pointer;
+`;
 
 const SEE_PROFILE_QUERY = gql`
     query seeProfile($username: String!) {
@@ -139,18 +153,102 @@ const SEE_PROFILE_QUERY = gql`
     ${PHOTO_FRAGMENT}
 `;
 
+const FOLLOW_USER_MUTATION = gql`
+    mutation followUser($username: String!) {
+        followUser(username:$username) {
+            ok
+            error
+            id
+        }
+    }
+`;
+
+const UNFOLLOW_USER_MUTATION = gql`
+    mutation unfollowUser($username: String!) {
+        unfollowUser(username:$username) {
+            ok
+            error
+            id
+        }
+    }
+`;
+
 function Profile() {
     const {username} = useParams();
-    const {data} = useQuery(SEE_PROFILE_QUERY, {
+    const {data:meData} = useUser();
+
+    // Follow User 
+    const [followUser] = useMutation(FOLLOW_USER_MUTATION, {
+        variables: {
+            username: username
+        },
+        refetchQueries: [
+            {
+            // refetch to update other user totalFollowers
+                query: SEE_PROFILE_QUERY,
+                variables: {
+                    username: username
+                },
+            },
+            // refetch again to update my profile
+            {
+                query: SEE_PROFILE_QUERY,
+                variables: {
+                    username: meData?.me?.username
+                }
+            }
+        ]
+    });
+
+    // UnFollow User 
+    const [unfollowUser] = useMutation(UNFOLLOW_USER_MUTATION, {
+        variables:{
+            username
+        },
+        refetchQueries: [
+            {
+                query: SEE_PROFILE_QUERY,
+                variables: {
+                    username: username
+                },
+            },
+            {
+                query: SEE_PROFILE_QUERY,
+                variables: {
+                    username: meData?.me?.username
+                }
+            }
+        ]
+    });
+    
+
+    // seeProfile
+    const {data, loading} = useQuery(SEE_PROFILE_QUERY, {
         variables: {
             username: username
         }
     });
-    console.log(data)
+
+    console.log(data);
     
+    useEffect(()=> {
+        window.scrollTo(0, 0)
+    },[]);
+
+    const getButton =(seeProfile)=> {
+        if(seeProfile?.isMe) {
+            return <ProfileBtn>Edit Profile</ProfileBtn>
+        }
+        if(seeProfile?.isFollowing) {
+            return <ProfileBtn onClick={unfollowUser}>Unfollow</ProfileBtn>
+        } else {
+            return <ProfileBtn onClick={followUser}>Follow</ProfileBtn>
+        }
+    };
+
     return (
         <ProfileContainer>
-            <PageTitle title={username} />
+            <PageTitle title={loading ? "Loading..." : `${data?.seeProfile?.username}'s Profile`} />
             <ProfileTop>
                 <ProfileAvatar>
                     <Avatar>
@@ -160,6 +258,7 @@ function Profile() {
                 <ProfileInfo>
                     <Row>
                         <Username>{data?.seeProfile?.username}</Username>
+                        {data?.seeProfile ? getButton(data.seeProfile) : null} 
                     </Row>
                     <Row>
                         <span>
