@@ -4,10 +4,11 @@ import React from 'react';
 import styled from "styled-components";
 
 const StyledAvatar = styled.div`
-    width: ${props => props.lg ? "30px" : "25px"};
-    height: ${props => props.lg ? "30px" : "25px"};
+    width: ${props => props.lg ? "32px" : "27px"};
+    height: ${props => props.lg ? "32px" : "27px"};
     border-radius: 50%;
     overflow: hidden;
+    box-sizing: border-box;
     img {
         width: 100%;
         object-fit: contain;

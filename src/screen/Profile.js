@@ -154,7 +154,7 @@ function Profile() {
             <ProfileTop>
                 <ProfileAvatar>
                     <Avatar>
-                        <img src={data?.seeProfile?.avatar} alt="profile" />
+                        {data?.seeProfile?.avatar === null ? <img src={"/img/profile.jpg"} alt="defaultprofile" /> : <img src={data?.seeProfile?.avatar} alt="profile" /> }
                     </Avatar>
                 </ProfileAvatar>
                 <ProfileInfo>
@@ -168,7 +168,7 @@ function Profile() {
                         </span>
                         <span>
                             <Value>{data?.seeProfile?.totalFollowings}</Value> 
-                            followings
+                            Followings
                         </span>
                     </Row>
                     <Row>
