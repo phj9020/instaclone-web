@@ -29,7 +29,12 @@ const Wrapper = styled.div`
     justify-content: space-between;
 `
 
-const Column = styled.div``
+const Column = styled.div`
+    a {
+        color: inherit;
+        cursor: pointer;
+    }
+`
 
 const Icon = styled.span`
     margin-left: 15px;
@@ -64,7 +69,9 @@ function Header() {
         <StyledHeader>
             <Wrapper>
                 <Column>
-                    <FontAwesomeIcon icon={faInstagram} size="2x" />
+                    <Link to={routes.home}>
+                        <FontAwesomeIcon icon={faInstagram} size="2x" />
+                    </Link>
                 </Column>
                 <Column>
                     {isLoggedIn ? 
