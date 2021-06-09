@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {useParams} from "react-router-dom";
-import {useQuery, gql, useMutation} from "@apollo/client";
+import {useQuery, gql, useMutation, useApolloClient} from "@apollo/client";
 import {PHOTO_FRAGMENT} from "../fragments";
 import styled from "styled-components";
 import PageTitle from '../components/PageTitle';
@@ -176,28 +176,69 @@ const UNFOLLOW_USER_MUTATION = gql`
 function Profile() {
     const {username} = useParams();
     const {data:meData} = useUser();
+    const client = useApolloClient();
 
+    const followerUserCompleted = (data) => {
+        const {followUser : {ok}} = data;
+        if(!ok) {
+            return;
+        }
+        // onComplted only supports data, so need to bring client from useApolloClient to get cache
+        const {cache} = client;
+        cache.modify({
+            id: `User:${username}`,
+            fields: {
+                totalFollowers(prev) {
+                    return prev + 1;
+                },
+                isFollowing() {
+                    return true;
+                }
+            }
+        });
+        // my profile  totalFollowing num increase
+        cache.modify({
+            id: `User:${meData?.me?.username}`,
+            fields:{
+                totalFollowings(prev) {
+                    return prev + 1;
+                }
+            }
+        });
+    };
+
+    const unfollowUserUpdate = (cache, result) => {
+        const {data: {unfollowUser : {ok}}} = result;
+        if(!ok) {
+            return;
+        }
+        cache.modify({
+            id: `User:${username}`,
+            fields: {
+                totalFollowers(prev) {
+                    return prev - 1;
+                },
+                isFollowing() {
+                    return false;
+                }
+            }
+        });
+        // my profile totalFollowings num decrease 
+        cache.modify({
+            id: `User:${meData?.me?.username}`,
+            fields:{
+                totalFollowings(prev) {
+                    return prev - 1;
+                }
+            }
+        });
+    };
     // Follow User 
     const [followUser] = useMutation(FOLLOW_USER_MUTATION, {
         variables: {
             username: username
         },
-        refetchQueries: [
-            {
-            // refetch to update other user totalFollowers
-                query: SEE_PROFILE_QUERY,
-                variables: {
-                    username: username
-                },
-            },
-            // refetch again to update my profile
-            {
-                query: SEE_PROFILE_QUERY,
-                variables: {
-                    username: meData?.me?.username
-                }
-            }
-        ]
+        onCompleted: followerUserCompleted
     });
 
     // UnFollow User 
@@ -205,20 +246,7 @@ function Profile() {
         variables:{
             username
         },
-        refetchQueries: [
-            {
-                query: SEE_PROFILE_QUERY,
-                variables: {
-                    username: username
-                },
-            },
-            {
-                query: SEE_PROFILE_QUERY,
-                variables: {
-                    username: meData?.me?.username
-                }
-            }
-        ]
+        update: unfollowUserUpdate
     });
     
 
