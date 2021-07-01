@@ -39,7 +39,8 @@ export const disableDarkMode = ()=> {
 
 // put token in headders 
 const httpLink = createHttpLink({
-    uri: 'http://localhost:4000/graphql',
+    uri: process.env.NODE_ENV === 'production' ? 
+    "https://phj9020-instaclone-backend.herokuapp.com/graphql" : 'http://localhost:4000/graphql',
 });
 
 const authLink = setContext((_, { headers }) => {
